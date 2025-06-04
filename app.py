@@ -7,8 +7,8 @@ app = Flask(__name__)
 
 # Google Drive File ID and Output Path
 subfolder = "xls"
-output_path = os.path.join(subfolder, "Datos_Catastro_Merged.xlsx")
-file_id = "12OSODFlJWPPkskcaiUKKbIOb-EZdCyZa"
+csv_path = os.path.join(subfolder, "data.csv")
+file_id = "1IpJAHhuNrMswaDpd_LtaYaas9beNHyt9"  # Your Google Drive file ID
 
 # Global DataFrame and loaded flag
 df = None
@@ -16,7 +16,7 @@ data_loaded = False
 
 
 def download_file_from_google_drive(file_id, output_path):
-    """Downloads file from Google Drive if not already present."""
+    """Downloads CSV file from Google Drive if not already present."""
     url = f"https://drive.google.com/uc?id={file_id}"
     os.makedirs(subfolder, exist_ok=True)
     print(f"Downloading data file to {output_path}...")
@@ -31,19 +31,27 @@ def load_data():
     # Ensure subfolder exists 
     os.makedirs(subfolder, exist_ok=True)
 
-    # Download file if not found
-    if not os.path.exists(output_path):
-        download_file_from_google_drive(file_id, output_path)
+    # Download CSV file if not found
+    if not os.path.exists(csv_path):
+        download_file_from_google_drive(file_id, csv_path)
 
-    # Load Excel file
+    # Load CSV file — only necessary columns
     try:
-        df = pd.read_excel(output_path).dropna(subset=['Calle'])
+        df = pd.read_csv(
+            csv_path,
+            usecols=["Calle", "Municipio", "Casa", "Terreno", "Año", "Latitud", "Longitud"]
+        )
+        df = df.dropna(subset=['Calle'])
+
+        # Ensure numeric columns are correctly typed
         for col in ['Casa', 'Terreno', 'Año']:
             df[col] = pd.to_numeric(df[col], errors='coerce')
+
         print("Data loaded successfully.")
         data_loaded = True
+
     except Exception as e:
-        raise RuntimeError(f"Error loading Excel file: {e}")
+        raise RuntimeError(f"Error loading CSV file: {e}")
 
 
 @app.before_request
