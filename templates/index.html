@@ -15,7 +15,7 @@
 
     .container {
       max-width: 1000px;
-      margin-top: 40px;
+      margin-top: 20px;
     }
 
     h1 {
@@ -78,27 +78,32 @@
   </div>
 
   <!-- Search Form -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-6 col-lg-3">
+  <div class="row g-3 mb-4 align-items-end">
+    <div class="col-md col-lg-auto flex-grow-1">
       <label for="casa" class="form-label">House Size (Casa)</label>
       <input type="number" id="casa" class="form-control" placeholder="e.g. 120" />
     </div>
-    <div class="col-md-6 col-lg-3">
+    <div class="col-md col-lg-auto flex-grow-1">
       <label for="terreno" class="form-label">Terrain Size (Terreno)</label>
       <input type="number" id="terreno" class="form-control" placeholder="e.g. 200" />
     </div>
-    <div class="col-md-6 col-lg-3">
+    <div class="col-md col-lg-auto flex-grow-1">
       <label for="año" class="form-label">Year (Año)</label>
       <input type="number" id="año" class="form-control" placeholder="e.g. 2020" />
     </div>
-    <div class="col-md-6 col-lg-3">
+    <div class="col-md col-lg-auto flex-grow-1">
       <label for="municipio" class="form-label">Municipio</label>
       <input type="text" id="municipio" class="form-control" placeholder="e.g. San José" />
     </div>
-    <div class="col-md-6 col-lg-3">
+    <div class="col-md col-lg-auto flex-grow-1">
       <label for="calle" class="form-label">Street (Calle)</label>
       <input type="text" id="calle" class="form-control" placeholder="e.g. Calle 5" />
     </div>
+  </div>
+
+  <!-- Clear Filters Button -->
+  <div class="mb-4 d-grid gap-2 d-md-flex justify-content-md-end">
+    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearFilters()">Clear Filters</button>
   </div>
 
   <div id="loading">🔍 Searching...</div>
@@ -216,6 +221,16 @@
     });
 
     alert(`Opening ${lastResults.length} maps...`);
+  }
+
+  // Clear all inputs and re-fetch
+  function clearFilters() {
+    document.getElementById('casa').value = '';
+    document.getElementById('terreno').value = '';
+    document.getElementById('año').value = '';
+    document.getElementById('municipio').value = '';
+    document.getElementById('calle').value = '';
+    fetchResults(); // Trigger search again
   }
 
   // Debounced input handler
